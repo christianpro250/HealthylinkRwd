@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sign In – HealthLink Rwanda</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --green:#1a6b3c;--green-light:#2d9a59;--green-pale:#e8f5ee;
+    --amber:#e07b1a;--cream:#faf8f3;--dark:#121a14;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--cream);color:var(--dark);min-height:100vh;display:flex;flex-direction:column}
+
+  .login-wrap{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+
+
+  .left-panel{background:var(--green);position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:3rem;overflow:hidden}
+  .left-panel::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 20% 80%,rgba(45,154,89,.55) 0%,transparent 50%),
+      radial-gradient(circle at 80% 20%,rgba(255,255,255,.06) 0%,transparent 45%);
+    pointer-events:none
+  }
+  /* decorative circles */
+  .deco-circle{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,.12);pointer-events:none}
+  .dc1{width:340px;height:340px;right:-100px;top:-100px}
+  .dc2{width:220px;height:220px;right:60px;top:140px}
+  .dc3{width:480px;height:480px;left:-160px;bottom:-200px}
+
+  .brand{position:relative;z-index:1;display:flex;align-items:center;gap:.75rem}
+  .brand-dot{width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.25)}
+  .brand-dot svg{width:18px;height:18px;fill:#fff}
+  .brand-name{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:#fff}
+
+  .left-content{position:relative;z-index:1}
+  .left-content blockquote{font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:1.5rem}
+  .left-content blockquote em{font-style:normal;color:rgba(255,255,255,.55)}
+  .left-content p{color:rgba(255,255,255,.7);font-size:.95rem;line-height:1.7;max-width:400px}
+
+  .left-stats{position:relative;z-index:1;display:flex;gap:2rem}
+  .lstat{border-left:2px solid rgba(255,255,255,.2);padding-left:1rem}
+  .lstat-num{font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:#fff;line-height:1}
+  .lstat-label{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:.25rem}
+
+
+  .right-panel{display:flex;align-items:center;justify-content:center;padding:3rem 2rem;background:var(--cream)}
+
+  .login-box{width:100%;max-width:420px}
+  .login-box-header{margin-bottom:2.5rem}
+  .login-box-header .eyebrow{font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.6rem}
+  .login-box-header h1{font-family:var(--font-display);font-size:2.2rem;font-weight:700;color:var(--dark);line-height:1.1}
+  .login-box-header p{margin-top:.6rem;color:#4a6552;font-size:.9rem;line-height:1.6}
+
+  .role-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;background:#e8ede9;border-radius:12px;padding:.35rem;margin-bottom:2rem}
+  .role-tab{border:none;background:transparent;border-radius:8px;padding:.6rem .5rem;font-family:var(--font-body);font-size:.82rem;font-weight:500;color:#4a6552;cursor:pointer;transition:all .2s;text-align:center}
+  .role-tab.active{background:#fff;color:var(--green);box-shadow:0 1px 4px rgba(0,0,0,.08);font-weight:600}
+
+  .field{margin-bottom:1.25rem;position:relative}
+  .field label{display:block;font-size:.85rem;font-weight:600;color:var(--dark);margin-bottom:.45rem}
+  .field label .req{color:#e53935;margin-left:2px}
+  .input-wrap{position:relative}
+  .input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;fill:#a0b8a8;pointer-events:none;transition:fill .2s}
+  .input-wrap input{
+    width:100%;border:1.5px solid #c5d9cc;border-radius:10px;
+    padding:.75rem .75rem .75rem 2.75rem;
+    font-family:var(--font-body);font-size:.95rem;
+    background:#fff;color:var(--dark);
+    transition:border-color .2s,box-shadow .2s;
+    outline:none
+  }
+  .input-wrap input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,107,60,.1)}
+  .input-wrap input:focus~svg,.input-wrap:focus-within svg{fill:var(--green)}
+  .input-wrap input.is-invalid{border-color:#ef4444}
+  .field .field-error{font-size:.78rem;color:#ef4444;margin-top:.35rem;display:none}
+  .field .field-error.show{display:block}
+
+
+  .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:#a0b8a8;transition:color .2s}
+  .pw-toggle:hover{color:var(--green)}
+  .pw-toggle svg{width:16px;height:16px;fill:currentColor}
+
+  .form-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+  .check-label{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:#4a6552;cursor:pointer}
+  .check-label input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);cursor:pointer}
+  .forgot-link{font-size:.85rem;color:var(--green);text-decoration:none;font-weight:500}
+  .forgot-link:hover{text-decoration:underline}
+  .btn-login{
+    width:100%;background:var(--green);color:#fff;border:none;
+    border-radius:100px;padding:1rem;font-size:1rem;font-weight:600;
+    font-family:var(--font-body);cursor:pointer;
+    transition:background .2s,transform .15s,box-shadow .2s;
+    position:relative;overflow:hidden
+  }
+  .btn-login:hover{background:var(--green-light);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,107,60,.25)}
+  .btn-login:active{transform:translateY(0)}
+  .btn-login.loading .btn-text{opacity:0}
+  .btn-login.loading .spinner{display:block}
+  .spinner{display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+  .divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:#a0b8a8;font-size:.82rem}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:#d4e8da}
+
+  .btn-guest{
+    width:100%;background:transparent;color:var(--green);
+    border:1.5px solid #c5d9cc;border-radius:100px;padding:.85rem;
+    font-size:.9rem;font-weight:600;font-family:var(--font-body);
+    cursor:pointer;transition:all .2s
+  }
+  .btn-guest:hover{background:var(--green-pale);border-color:var(--green)}
+
+  .signup-row{margin-top:1.75rem;text-align:center;font-size:.85rem;color:#4a6552}
+  .signup-row a{color:var(--green);text-decoration:none;font-weight:600}
+  .signup-row a:hover{text-decoration:underline}
+
+
+  .toast-wrap{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none}
+  .toast-msg{
+    background:var(--dark);color:#fff;border-radius:100px;
+    padding:.75rem 1.5rem;font-size:.88rem;font-weight:500;
+    opacity:0;transform:translateY(10px);transition:all .3s;white-space:nowrap
+  }
+  .toast-msg.show{opacity:1;transform:translateY(0)}
+
+  .login-box{animation:fadeUp .5s ease both}
+  .left-content{animation:fadeUp .5s .1s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+  @media(max-width:768px){
+    .login-wrap{grid-template-columns:1fr}
+    .left-panel{display:none}
+    .right-panel{padding:2rem 1.25rem;align-items:flex-start;padding-top:3rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="left-panel">
+    <div class="deco-circle dc1"></div>
+    <div class="deco-circle dc2"></div>
+    <div class="deco-circle dc3"></div>
+
+    <div class="brand">
+      <div class="brand-dot">
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3a2 2 0 110 4 2 2 0 010-4zm0 9a6 6 0 01-4.47-2C6.44 10.89 8.1 10 10 10s3.56.89 4.47 2A6 6 0 0110 14z"/></svg>
+      </div>
+      <span class="brand-name">HealthLink Rwanda</span>
+    </div>
+
+    <div class="left-content">
+      <blockquote>
+        Every report<br>
+        <em>saves a life</em><br>
+        somewhere in Rwanda.
+      </blockquote>
+      <p>Join health workers, community members, and district officers across all 30 districts using HealthLink to report, track, and respond to health incidents — faster than ever before.</p>
+    </div>
+
+    <div class="left-stats">
+      <div class="lstat">
+        <div class="lstat-num">1,284</div>
+        <div class="lstat-label">Reports this month</div>
+      </div>
+      <div class="lstat">
+        <div class="lstat-num">4.2h</div>
+        <div class="lstat-label">Avg. response time</div>
+      </div>
+      <div class="lstat">
+        <div class="lstat-num">30</div>
+        <div class="lstat-label">Districts active</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="login-box">
+
+      <div class="login-box-header">
+        <div class="eyebrow">Welcome back</div>
+        <h1>Sign in to your account</h1>
+        <p>Access your reports, dashboard, and district health alerts.</p>
+      </div>
+
+    
+      <div class="role-tabs" role="tablist">
+        <button class="role-tab active" data-role="community" onclick="setRole(this)">Community</button>
+        <button class="role-tab" data-role="health_worker" onclick="setRole(this)">Health Worker</button>
+        <button class="role-tab" data-role="officer" onclick="setRole(this)">District Officer</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+
+    
+        <div class="field">
+          <label for="identifier">Phone or Email <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3a2 2 0 110 4 2 2 0 010-4zm0 9a6 6 0 01-4.47-2C6.44 10.89 8.1 10 10 10s3.56.89 4.47 2A6 6 0 0110 14z"/></svg>
+            <input type="text" id="identifier" placeholder="+250 7XX XXX XXX or email" autocomplete="username"/>
+          </div>
+          <div class="field-error" id="identifierErr">Please enter your phone number or email.</div>
+        </div>
+
+
+        <div class="field" id="empIdField" style="display:none">
+          <label for="empId">Employee / Badge ID <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2H3V4zm0 4h14v8a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm5 2v1h4v-1H8z"/></svg>
+            <input type="text" id="empId" placeholder="e.g. HW-2024-0042" autocomplete="off"/>
+          </div>
+          <div class="field-error" id="empIdErr">Employee ID is required for this role.</div>
+        </div>
+
+    
+        <div class="field">
+          <label for="password">Password <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20"><path d="M10 2a4 4 0 00-4 4v2H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2v-6a2 2 0 00-2-2h-2V6a4 4 0 00-4-4zm-2 6V6a2 2 0 114 0v2H8zm2 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/></svg>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePw()" title="Show/hide password">
+              <svg id="eyeIcon" viewBox="0 0 20 20"><path id="eyePath" d="M10 4C5 4 1.73 7.11 1 10c.73 2.89 4 6 9 6s8.27-3.11 9-6c-.73-2.89-4-6-9-6zm0 10a4 4 0 110-8 4 4 0 010 8zm0-6a2 2 0 100 4 2 2 0 000-4z"/></svg>
+            </button>
+          </div>
+          <div class="field-error" id="passwordErr">Please enter your password.</div>
+        </div>
+
+    
+        <div class="form-row">
+          <label class="check-label">
+            <input type="checkbox" id="rememberMe"/> Remember me
+          </label>
+          <a href="#" class="forgot-link" onclick="showForgot(event)">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span class="btn-text">Sign In →</span>
+          <span class="spinner"></span>
+        </button>
+
+        <div class="divider">or</div>
+
+        <button type="button" class="btn-guest" onclick="guestLogin('index.html')">Continue as Guest (Read Only)</button>
+
+        <div class="signup-row">
+          Don't have an account? <a href="#" onclick="showSignup(event)">Register here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="toast-wrap">
+  <div class="toast-msg" id="toast"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const DEMO = {
+  community:    { id:'+250788000000', pw:'community123' },
+  health_worker:{ id:'hw@health.rw',  pw:'hwpass456', emp:'HW-2024-0042' },
+  officer:      { id:'officer@rw.gov',pw:'officer789', emp:'DO-2024-0007' }
+};
+
+let currentRole = 'community';
+let pwVisible = false;
+
+function setRole(btn) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRole = btn.dataset.role;
+  const empField = document.getElementById('empIdField');
+  empField.style.display = (currentRole !== 'community') ? 'block' : 'none';
+  // Update placeholder hint
+  const idInput = document.getElementById('identifier');
+  if (currentRole === 'officer') idInput.placeholder = 'officer@district.gov.rw';
+  else if (currentRole === 'health_worker') idInput.placeholder = 'worker@health.rw or phone';
+  else idInput.placeholder = '+250 7XX XXX XXX or email';
+  clearErrors();
+}
+
+function togglePw() {
+  pwVisible = !pwVisible;
+  const inp = document.getElementById('password');
+  inp.type = pwVisible ? 'text' : 'password';
+  document.getElementById('eyePath').setAttribute('d',
+    pwVisible
+      ? 'M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478zm-1.528 5.477a4 4 0 005.478 5.478l-5.478-5.478z'
+      : 'M10 4C5 4 1.73 7.11 1 10c.73 2.89 4 6 9 6s8.27-3.11 9-6c-.73-2.89-4-6-9-6zm0 10a4 4 0 110-8 4 4 0 010 8zm0-6a2 2 0 100 4 2 2 0 000-4z'
+  );
+}
+
+function clearErrors() {
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('.input-wrap input').forEach(i => i.classList.remove('is-invalid'));
+}
+
+function showError(fieldId, errId) {
+  document.getElementById(fieldId).classList.add('is-invalid');
+  document.getElementById(errId).classList.add('show');
+}
+
+function showToast(msg, duration=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  clearErrors();
+
+  const id  = document.getElementById('identifier').value.trim();
+  const pw  = document.getElementById('password').value;
+  const emp = document.getElementById('empId').value.trim();
+  let valid = true;
+
+  if (!id) { showError('identifier','identifierErr'); valid = false; }
+  if (!pw) { showError('password','passwordErr'); valid = false; }
+  if (currentRole !== 'community' && !emp) { showError('empId','empIdErr'); valid = false; }
+  if (!valid) return;
+
+
+  const btn = document.getElementById('loginBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+
+    const demo = DEMO[currentRole];
+    const pwOk = pw === demo.pw;
+    const idOk = id === demo.id;
+    const empOk = currentRole === 'community' || emp === demo.emp;
+
+    if (pwOk && idOk && empOk) {
+      showToast('✓ Signed in successfully — redirecting…');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    } else {
+    
+      showError('identifier','identifierErr');
+      document.getElementById('identifierErr').textContent = 'Incorrect credentials. Please try again.';
+      showError('password','passwordErr');
+      document.getElementById('passwordErr').textContent = '';
+      showToast('❌ Login failed. Check your credentials.');
+    }
+  }, 1400);
+});
+
+function guestLogin() {
+  showToast('Entering guest mode…');
+  setTimeout(() => window.location.href = 'dashboard.html', 1000);
+}
+
+function showForgot(e) {
+  e.preventDefault();
+  showToast('📧 Password reset link sent to your registered email.');
+}
+
+function showSignup(e) {
+  e.preventDefault();
+  showToast('📝 Registration opens to new users — contact your district health office.');
+}
+
+console.info('Demo credentials → Community: +250788000000 / community123');
+console.info('Health Worker: hw@health.rw / hwpass456 / HW-2024-0042');
+console.info('District Officer: officer@rw.gov / officer789 / DO-2024-0007');
+</script>
+</body>
+</html>

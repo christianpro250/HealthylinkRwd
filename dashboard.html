@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard – HealthLink Rwanda</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --green:#1a6b3c;
+    --green-light:#2d9a59;
+    --green-pale:#e8f5ee;
+    --amber:#e07b1a;
+    --cream:#faf8f3;
+    --dark:#121a14;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;
+    margin:0;
+    padding:0}
+  body{font-family:var(--font-body);
+    background:#f0f4f1;
+    color:var(--dark)}
+
+  nav{position:fixed;
+    top:0;width:100%;
+    z-index:100;
+    background:rgba(250,248,243,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid #d4e8da;padding:0 2rem}
+  .nav-inner{max-width:1200px;
+    margin:0 auto;display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px}
+  .logo{font-family:var(--font-display);
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--green);
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:.5rem}
+  .logo span{width:28px;height:28px;
+    background:var(--green);
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center}
+  .logo span svg{width:16px;height:16px;fill:#fff}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{font-size:.9rem;color:#4a6552;text-decoration:none;font-weight:500;transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:var(--green)}
+  .btn-nav{background:var(--green);color:#fff!important;padding:.45rem 1.2rem;border-radius:100px;transition:background .2s!important}
+
+  .dash-wrapper{max-width:1200px;margin:0 auto;padding:5.5rem 1.5rem 4rem}
+
+  .dash-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+  .dash-header h1{font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--dark)}
+  .dash-header p{color:#4a6552;font-size:.9rem;margin-top:.25rem}
+  .filter-row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+  .filter-row select,.filter-row button{font-family:var(--font-body);font-size:.85rem;padding:.45rem .9rem;border:1px solid #c5d9cc;border-radius:8px;background:#fff;color:var(--dark);cursor:pointer}
+  .filter-row button{background:var(--green);color:#fff;border-color:var(--green)}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+  .kpi{background:#fff;border:1px solid #d4e8da;border-radius:14px;padding:1.25rem 1.5rem}
+  .kpi-label{font-size:.8rem;color:#4a6552;font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+  .kpi-num{font-family:var(--font-display);font-size:2.2rem;font-weight:700;color:var(--dark);line-height:1;margin:.4rem 0}
+  .kpi-delta{font-size:.82rem}
+  .up{color:#16a34a}.down{color:#dc2626}.flat{color:#888}
+
+  .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+  .chart-card{background:#fff;border:1px solid #d4e8da;border-radius:14px;padding:1.5rem}
+  .chart-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:1.25rem}
+  .chart-subtitle{font-size:.82rem;color:#888;margin-top:.25rem;font-family:var(--font-body)}
+
+  .charts-row2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+
+  .table-card{background:#fff;border:1px solid #d4e8da;border-radius:14px;padding:1.5rem}
+  .table-title{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:1.25rem}
+  table{width:100%;font-size:.875rem;border-collapse:collapse}
+  th{font-weight:600;color:#4a6552;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;padding:.6rem .75rem;border-bottom:2px solid #e5ede8;text-align:left}
+  td{padding:.75rem;border-bottom:1px solid #f0f5f2;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .badge-sev{display:inline-block;padding:.25rem .65rem;border-radius:100px;font-size:.75rem;font-weight:600}
+  .sev-low{background:#dcfce7;color:#166534}
+  .sev-medium{background:#fef9c3;color:#854d0e}
+  .sev-high{background:#ffedd5;color:#9a3412}
+  .sev-critical{background:#fee2e2;color:#991b1b}
+  .status-open{background:#e0f2fe;color:#0369a1;display:inline-block;padding:.25rem .65rem;border-radius:100px;font-size:.75rem;font-weight:600}
+  .status-closed{background:#dcfce7;color:#166534;display:inline-block;padding:.25rem .65rem;border-radius:100px;font-size:.75rem;font-weight:600}
+  .status-review{background:#fef3c7;color:#92400e;display:inline-block;padding:.25rem .65rem;border-radius:100px;font-size:.75rem;font-weight:600}
+
+  .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s ease infinite;margin-right:.4rem}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+  @media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr}.charts-row,.charts-row2{grid-template-columns:1fr}}
+  @media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span><svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3a2 2 0 110 4 2 2 0 010-4zm0 9a6 6 0 01-4.47-2C6.44 10.89 8.1 10 10 10s3.56.89 4.47 2A6 6 0 0110 14z"/></svg></span>
+      HealthLink Rwanda
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html">Submit Report</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="login.html">logout</a></li>
+      <li><a href="report.html" class="btn-nav">Report Now</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="dash-wrapper">
+  <div class="dash-header">
+    <div>
+      <h1>Health Reports Dashboard</h1>
+      <p><span class="live-dot"></span> Live data · Updated just now · <strong>Kigali City Province</strong></p>
+    </div>
+    <div class="filter-row">
+      <select id="filterProvince">
+        <option>Kigali City</option><option>Northern Province</option>
+        <option>Eastern Province</option><option>Southern Province</option><option>Western Province</option>
+      </select>
+      <select id="filterPeriod">
+        <option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option><option>This year</option>
+      </select>
+      <button onclick="window.location.href='report.html'">+ New Report</button>
+    </div>
+  </div>
+
+  
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Total Reports</div>
+      <div class="kpi-num">1,284</div>
+      <div class="kpi-delta up">↑ 18% vs last month</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Open Cases</div>
+      <div class="kpi-num">147</div>
+      <div class="kpi-delta down">↑ 12 new today</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg. Response Time</div>
+      <div class="kpi-num">4.2h</div>
+      <div class="kpi-delta up">↓ 0.8h improvement</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Districts Covered</div>
+      <div class="kpi-num">30 / 30</div>
+      <div class="kpi-delta flat">Full coverage</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Reports Over Time
+        <div class="chart-subtitle">Monthly incident reports — last 12 months</div>
+      </div>
+      <canvas id="lineChart" height="90"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">By Category
+        <div class="chart-subtitle">Incident type distribution</div>
+      </div>
+      <canvas id="doughnutChart" height="180"></canvas>
+    </div>
+  </div>
+
+
+  <div class="charts-row2">
+    <div class="chart-card">
+      <div class="chart-title">Severity Breakdown
+        <div class="chart-subtitle">All reports this month</div>
+      </div>
+      <canvas id="barChart" height="160"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Top Reporting Districts
+        <div class="chart-subtitle">Volume this month</div>
+      </div>
+      <canvas id="hbarChart" height="160"></canvas>
+    </div>
+  </div>
+
+
+  <div class="table-card">
+    <div class="chart-title">Recent Reports</div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Ref ID</th><th>District</th><th>Category</th>
+            <th>Severity</th><th>Reported</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="reportTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const green='#1a6b3c', greenL='#2d9a59', amber='#e07b1a', red='#ef4444', blue='#2563eb', teal='#0891b2';
+
+new Chart(document.getElementById('lineChart'),{
+  type:'line',
+  data:{
+    labels:['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'],
+    datasets:[{
+      label:'Reports',
+      data:[820,910,870,990,1050,1100,980,870,1020,1110,1180,1284],
+      borderColor:green,backgroundColor:'rgba(26,107,60,.08)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:green
+    }]
+  },
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:false,grid:{color:'#e5ede8'}},x:{grid:{display:false}}}}
+});
+
+
+new Chart(document.getElementById('doughnutChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Malaria','Water/Sanitation','Nutrition','Respiratory','TB','Other'],
+    datasets:[{
+      data:[342,218,195,178,98,253],
+      backgroundColor:[green,teal,amber,blue,'#8b5cf6',red],
+      borderWidth:2,borderColor:'#fff'
+    }]
+  },
+  options:{cutout:'65%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:12}}}}
+});
+
+
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{
+    labels:['Low','Medium','High','Critical'],
+    datasets:[{
+      data:[412,486,278,108],
+      backgroundColor:['#22c55e','#eab308','#f97316','#ef4444'],
+      borderRadius:8,borderSkipped:false
+    }]
+  },
+  options:{plugins:{legend:{display:false}},scales:{y:{grid:{color:'#e5ede8'}},x:{grid:{display:false}}}}
+});
+
+
+new Chart(document.getElementById('hbarChart'),{
+  type:'bar',
+  data:{
+    labels:['Gasabo','Nyarugenge','Kicukiro','Bugesera','Musanze','Huye','Rubavu','Rwamagana'],
+    datasets:[{
+      data:[284,221,198,145,132,118,104,89],
+      backgroundColor:greenL,borderRadius:8,borderSkipped:false
+    }]
+  },
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#e5ede8'}},y:{grid:{display:false}}}}
+});
+
+
+const reports=[
+  {id:'HLR-2025-1284',district:'Gasabo',cat:'Malaria',sev:'high',time:'2 hrs ago',status:'open'},
+  {id:'HLR-2025-1283',district:'Nyarugenge',cat:'Water/Sanitation',sev:'critical',time:'3 hrs ago',status:'review'},
+  {id:'HLR-2025-1282',district:'Kicukiro',cat:'Nutrition',sev:'medium',time:'5 hrs ago',status:'open'},
+  {id:'HLR-2025-1281',district:'Bugesera',cat:'Malaria',sev:'high',time:'6 hrs ago',status:'closed'},
+  {id:'HLR-2025-1280',district:'Musanze',cat:'Respiratory',sev:'low',time:'8 hrs ago',status:'closed'},
+  {id:'HLR-2025-1279',district:'Huye',cat:'TB',sev:'high',time:'10 hrs ago',status:'review'},
+  {id:'HLR-2025-1278',district:'Rubavu',cat:'Malaria',sev:'medium',time:'12 hrs ago',status:'closed'},
+  {id:'HLR-2025-1277',district:'Rwamagana',cat:'Water/Sanitation',sev:'low',time:'14 hrs ago',status:'closed'},
+];
+const tbody=document.getElementById('reportTable');
+reports.forEach(r=>{
+  const sevClass={'low':'sev-low','medium':'sev-medium','high':'sev-high','critical':'sev-critical'}[r.sev];
+  const stClass={'open':'status-open','closed':'status-closed','review':'status-review'}[r.status];
+  tbody.innerHTML+=`<tr>
+    <td style="font-family:monospace;font-size:.82rem;color:#4a6552">${r.id}</td>
+    <td><strong>${r.district}</strong></td>
+    <td>${r.cat}</td>
+    <td><span class="badge-sev ${sevClass}">${r.sev.charAt(0).toUpperCase()+r.sev.slice(1)}</span></td>
+    <td style="color:#888;font-size:.83rem">${r.time}</td>
+    <td><span class="${stClass}">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></td>
+  </tr>`;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>HealthLink Rwanda – Community Health Reporting</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --green:#1a6b3c;--green-light:#2d9a59;--green-pale:#e8f5ee;
+    --amber:#e07b1a;--cream:#faf8f3;--dark:#121a14;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--cream);color:var(--dark);overflow-x:hidden}
+
+  nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(250,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid #d4e8da;padding:0 2rem}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:.5rem}
+  .logo span{width:28px;height:28px;background:var(--green);border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+  .logo span svg{width:16px;height:16px;fill:#fff}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{font-size:.9rem;color:#4a6552;text-decoration:none;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:var(--green)}
+  .btn-nav{background:var(--green);color:#fff!important;padding:.45rem 1.2rem;border-radius:100px;transition:background .2s!important}
+  .btn-nav:hover{background:var(--green-light)!important}
+
+  .hero{min-height:100vh;display:flex;align-items:center;padding:6rem 2rem 4rem;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 80% 50%,#c8e8d4 0%,transparent 70%);pointer-events:none}
+  .hero-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;width:100%}
+  .hero-tag{display:inline-block;background:var(--green-pale);color:var(--green);border:1px solid #a4d4b4;border-radius:100px;font-size:.8rem;font-weight:600;letter-spacing:.08em;padding:.35rem .9rem;margin-bottom:1.5rem;text-transform:uppercase}
+  .hero h1{font-family:var(--font-display);font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.08;font-weight:900;color:var(--dark)}
+  .hero h1 em{font-style:normal;color:var(--green)}
+  .hero-desc{margin:1.5rem 0 2.5rem;font-size:1.1rem;color:#4a6552;line-height:1.7;max-width:480px}
+  .btn-primary-custom{background:var(--green);color:#fff;border:none;border-radius:100px;padding:.85rem 2rem;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .15s,background .2s;text-decoration:none;display:inline-block}
+  .btn-primary-custom:hover{background:var(--green-light);transform:translateY(-2px);color:#fff}
+  .btn-outline-custom{background:transparent;color:var(--green);border:2px solid var(--green);border-radius:100px;padding:.85rem 2rem;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;margin-left:1rem}
+  .btn-outline-custom:hover{background:var(--green);color:#fff}
+
+  .hero-visual{position:relative}
+  .hero-card{background:#fff;border-radius:20px;padding:2rem;box-shadow:0 8px 40px rgba(26,107,60,.12);border:1px solid #d4e8da}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+  .stat-box{background:var(--green-pale);border-radius:12px;padding:1rem 1.2rem}
+  .stat-num{font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--green)}
+  .stat-label{font-size:.8rem;color:#4a6552;margin-top:.2rem}
+  .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s ease infinite;margin-right:.4rem}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+
+  .features{padding:6rem 2rem;background:#fff}
+  .section-max{max-width:1100px;margin:0 auto}
+  .section-label{font-size:.8rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.75rem}
+  .section-title{font-family:var(--font-display);font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--dark);line-height:1.1;margin-bottom:1rem}
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+  .feat-card{background:var(--cream);border:1px solid #d4e8da;border-radius:16px;padding:2rem;transition:transform .2s,box-shadow .2s}
+  .feat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,107,60,.1)}
+  .feat-icon{width:48px;height:48px;background:var(--green-pale);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1.2rem;font-size:1.4rem}
+  .feat-card h3{font-family:var(--font-display);font-size:1.25rem;font-weight:700;margin-bottom:.75rem;color:var(--dark)}
+  .feat-card p{font-size:.9rem;color:#4a6552;line-height:1.6}
+
+
+  .social{padding:6rem 2rem;background:var(--cream)}
+  .social-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+  .feed-box{background:#fff;border:1px solid #d4e8da;border-radius:16px;overflow:hidden}
+  .feed-header{padding:1rem 1.5rem;border-bottom:1px solid #e8f0eb;display:flex;align-items:center;gap:.75rem;font-weight:600;font-size:.95rem}
+  .feed-header svg{width:20px;height:20px}
+  .feed-item{padding:1rem 1.5rem;border-bottom:1px solid #f0f5f2;font-size:.88rem;color:#333;line-height:1.6}
+  .feed-item:last-child{border-bottom:none}
+  .feed-meta{font-size:.78rem;color:#888;margin-top:.4rem}
+  .tw-color{color:#1da1f2}
+  .fb-color{color:#1877f2}
+
+
+  .cta{padding:6rem 2rem;background:var(--green);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border:2px solid rgba(255,255,255,.08);border-radius:50%}
+  .cta::after{content:'';position:absolute;left:-80px;bottom:-80px;width:350px;height:350px;border:2px solid rgba(255,255,255,.06);border-radius:50%}
+  .cta-inner{max-width:700px;margin:0 auto;text-align:center;position:relative;z-index:1}
+  .cta h2{font-family:var(--font-display);font-size:clamp(2rem,4vw,2.8rem);color:#fff;font-weight:700;margin-bottom:1rem}
+  .cta p{color:rgba(255,255,255,.8);font-size:1.05rem;margin-bottom:2rem}
+  .btn-white{background:#fff;color:var(--green);border:none;border-radius:100px;padding:.9rem 2.2rem;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .15s;text-decoration:none;display:inline-block}
+  .btn-white:hover{transform:translateY(-2px);color:var(--green)}
+
+
+  footer{background:var(--dark);color:rgba(255,255,255,.6);padding:3rem 2rem;text-align:center;font-size:.88rem}
+  footer strong{color:#fff}
+  footer a{color:rgba(255,255,255,.6);text-decoration:none}
+  footer a:hover{color:#fff}
+
+  @media(max-width:768px){
+    .hero-grid,.features-grid,.social-grid{grid-template-columns:1fr}
+    .btn-outline-custom{margin-left:0;margin-top:.75rem;display:block;text-align:center}
+    .hero-visual{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span>
+        <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3a2 2 0 110 4 2 2 0 010-4zm0 9a6 6 0 01-4.47-2C6.44 10.89 8.1 10 10 10s3.56.89 4.47 2A6 6 0 0110 14z"/></svg>
+      </span>
+      HealthLink Rwanda
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html">Submit Report</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="login.html">logout</a></li>
+
+      <li><a href="report.html" class="btn-nav">Report Now</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tag">🇷🇼 Built for Rwanda</div>
+      <h1>Community <em>Health</em> Reporting, Simplified.</h1>
+      <p class="hero-desc">Empower every sector and district in Rwanda to report health incidents, track disease outbreaks, and connect local health workers in real time.</p>
+      <a href="report.html" class="btn-primary-custom">Submit a Report</a>
+      <a href="dashboard.html" class="btn-outline-custom">View Dashboard</a>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div style="font-size:.85rem;color:#4a6552;font-weight:600;display:flex;align-items:center">
+          <span class="live-dot"></span> Live health activity — Kigali Province
+        </div>
+        <div class="stat-grid">
+          <div class="stat-box">
+            <div class="stat-num">1,284</div>
+            <div class="stat-label">Reports this month</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">30</div>
+            <div class="stat-label">Districts covered</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">97%</div>
+            <div class="stat-label">Follow-up rate</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num">4.2h</div>
+            <div class="stat-label">Avg. response time</div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;font-size:.85rem;color:#4a6552">
+          <strong style="color:var(--dark)">Recent alerts:</strong>
+          <ul style="margin-top:.5rem;padding-left:1.2rem;line-height:1.9">
+            <li>Malaria cluster — Bugesera District</li>
+            <li>Water sanitation issue — Nyarugenge</li>
+            <li>Nutrition concern — Rulindo Sector</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="features">
+  <div class="section-max">
+    <div class="section-label">What we offer</div>
+    <h2 class="section-title">Everything your sector needs<br>to stay healthy.</h2>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <h3>Structured Reporting</h3>
+        <p>Submit validated health incident reports with rich location data, severity levels, and photo evidence. Forms built with Bootstrap and client-side validation prevent bad data at entry.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Real-Time Dashboard</h3>
+        <p>Visualise trends across sectors and districts. Identify outbreak patterns, track follow-ups, and export reports for district health officers — all from a single interface.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📡</div>
+        <h3>Social Feed Integration</h3>
+        <p>Stay informed via curated health updates from official Twitter/X and Facebook pages. Community voices and official alerts — aggregated in one feed.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗺️</div>
+        <h3>District Coverage</h3>
+        <p>Built to scale from one pilot sector to all 30 districts of Rwanda. The data model is district-agnostic so any community can onboard without code changes.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Instant Alerts</h3>
+        <p>Health workers receive SMS and email notifications when a new high-severity report is filed in their sector. Response times reduced from days to hours.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>All reports are encrypted in transit. Reporter identities are protected by default. Administrators can access anonymised data while preserving community trust.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="social">
+  <div class="section-max">
+    <div class="section-label">Community voices</div>
+    <h2 class="section-title">What people are saying.</h2>
+    <p style="color:#4a6552;max-width:560px;margin-top:.5rem">Real-time updates from our official social media channels — health tips, outbreak alerts, and community success stories.</p>
+    <div class="social-grid">
+
+      <div class="feed-box">
+        <div class="feed-header tw-color">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.892-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+           <a href="https://twitter.com/MinisanteRw" target="_blank">View on Twitter/X →</a>
+        <span class="source-badge" id="twSource">Loading…</span>
+        </div>
+        <div class="feed-item">
+          🚨 <strong>Alert:</strong> Community health workers in Bugesera are monitoring a cluster of malaria cases. Residents are urged to use mosquito nets and seek treatment early.
+          <div class="feed-meta">2 hours ago · 47 retweets · 113 likes</div>
+        </div>
+        <div class="feed-item">
+          💧 Water quality testing completed in Nyarugenge Sector. Results shared with district office. Temporary clean water distribution points are active at 3 locations.
+          <div class="feed-meta">5 hours ago · 22 retweets · 89 likes</div>
+        </div>
+        <div class="feed-item">
+          🌟 Congratulations to Kicukiro health workers — <strong>0 preventable deaths</strong> recorded in Q1 2025. This is the power of community reporting. #HealthLinkRW
+          <div class="feed-meta">Yesterday · 104 retweets · 312 likes</div>
+        </div>
+        <div class="feed-item">
+          📋 New monthly report form is live! Sector-level data now feeds directly to district dashboards. Submit your reports at healthlinkrw.rw/report
+          <div class="feed-meta">2 days ago · 35 retweets · 78 likes</div>
+        </div>
+      </div>
+
+      <div class="feed-box">
+        <div class="feed-header fb-color">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.791-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+           <a href="https://www.facebook.com/MinisanteRwanda" target="_blank">View on Facebook →</a>
+        </div>
+        <div class="feed-item">
+          🏥 <strong>Free Health Screening Day</strong> — This Saturday, 8 AM–2 PM at Remera Health Centre. Blood pressure, malaria, and blood sugar tests available at no cost. Bring your community card.
+          <div class="feed-meta">1 hour ago · 234 shares · 189 likes</div>
+        </div>
+        <div class="feed-item">
+          👩‍⚕️ Meet Agnes, a community health worker in Rulindo who has filed over 200 nutrition reports this year. Her reports helped trigger a government food-aid programme. <em>Stories like hers change lives.</em>
+          <div class="feed-meta">3 hours ago · 145 shares · 428 likes</div>
+        </div>
+        <div class="feed-item">
+          📊 March 2025 District Health Summary is published. Kigali Province recorded a <strong>12% reduction</strong> in preventable illness thanks to early reporting. Full report linked in bio.
+          <div class="feed-meta">Yesterday · 87 shares · 201 likes</div>
+        </div>
+        <div class="feed-item">
+          🌿 Nutrition awareness month kicks off in April. Community volunteers needed! Sign up through the HealthLink platform or contact your local sector health coordinator.
+          <div class="feed-meta">2 days ago · 63 shares · 155 likes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-inner">
+    <h2>Your report can save a life.</h2>
+    <p>Every health incident reported on time allows health workers to respond faster. Join thousands of community members already making a difference across Rwanda.</p>
+    <a href="report.html" class="btn-white">Submit a Health Report →</a>
+  </div>
+</section>
+
+<footer>
+  <p><strong>HealthLink Rwanda</strong> — A community health reporting platform built for Rwanda's sectors and districts.</p>
+  <p style="margin-top:.75rem">
+    <a href="index.html">Home</a> &nbsp;·&nbsp;
+    <a href="report.html">Submit Report</a> &nbsp;·&nbsp;
+    <a href="dashboard.html">Dashboard</a> &nbsp;·&nbsp;
+    <a href="#">GitHub</a>
+  </p>
+  <p style="margin-top:1rem;font-size:.78rem;color:rgba(255,255,255,.35)">Simulated demo project · Technologies: HTML5, CSS3, JavaScript, Bootstrap 5</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

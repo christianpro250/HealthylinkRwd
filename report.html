@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Submit a Report – HealthLink Rwanda</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --green:#1a6b3c;--green-light:#2d9a59;--green-pale:#e8f5ee;
+    --amber:#e07b1a;--cream:#faf8f3;--dark:#121a14;
+    --font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font-body);background:var(--cream);color:var(--dark)}
+
+  nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(250,248,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid #d4e8da;padding:0 2rem}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--green);text-decoration:none;display:flex;align-items:center;gap:.5rem}
+  .logo span{width:28px;height:28px;background:var(--green);border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+  .logo span svg{width:16px;height:16px;fill:#fff}
+  .nav-links{display:flex;gap:2rem;list-style:none}
+  .nav-links a{font-size:.9rem;color:#4a6552;text-decoration:none;font-weight:500;transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:var(--green)}
+  .btn-nav{background:var(--green);color:#fff!important;padding:.45rem 1.2rem;border-radius:100px;transition:background .2s!important}
+  .btn-nav:hover{background:var(--green-light)!important}
+
+  .page-header{padding:7rem 2rem 3rem;background:#fff;border-bottom:1px solid #d4e8da}
+  .page-header-inner{max-width:760px;margin:0 auto}
+  .breadcrumb-custom{font-size:.82rem;color:#888;margin-bottom:.75rem}
+  .breadcrumb-custom a{color:var(--green);text-decoration:none}
+  .page-header h1{font-family:var(--font-display);font-size:clamp(2rem,4vw,2.8rem);font-weight:700;color:var(--dark);line-height:1.1}
+  .page-header p{margin-top:.75rem;color:#4a6552;font-size:1rem;line-height:1.7}
+
+  .form-wrapper{max-width:760px;margin:3rem auto;padding:0 2rem 5rem}
+  .form-section{background:#fff;border:1px solid #d4e8da;border-radius:16px;padding:2rem;margin-bottom:2rem}
+  .form-section-title{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:.35rem;display:flex;align-items:center;gap:.75rem}
+  .step-badge{width:28px;height:28px;background:var(--green);color:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+  .form-section-desc{font-size:.88rem;color:#4a6552;margin-bottom:1.5rem;padding-left:2.75rem}
+
+  .form-label{font-weight:500;font-size:.9rem;color:var(--dark);margin-bottom:.4rem}
+  .required{color:#e53935;margin-left:2px}
+  .form-control,.form-select,.form-check-input{border-color:#c5d9cc;font-family:var(--font-body)}
+  .form-control:focus,.form-select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,107,60,.12)}
+  .form-text{font-size:.8rem;color:#888}
+
+  .severity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+  .severity-btn{position:relative}
+  .severity-btn input{position:absolute;opacity:0;width:0;height:0}
+  .severity-label{display:block;border:2px solid #d4e8da;border-radius:12px;padding:.9rem .5rem;text-align:center;cursor:pointer;transition:all .2s;font-size:.85rem}
+  .severity-label .sev-icon{font-size:1.4rem;display:block;margin-bottom:.4rem}
+  .severity-btn input:checked+.severity-label{border-color:var(--green);background:var(--green-pale)}
+  .severity-label:hover{border-color:var(--green-light)}
+
+  .photo-drop{border:2px dashed #c5d9cc;border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s;background:var(--cream)}
+  .photo-drop:hover{border-color:var(--green)}
+  .photo-drop svg{width:36px;height:36px;fill:#a0b8a8;margin-bottom:.75rem}
+
+  .consent-box{background:var(--green-pale);border:1px solid #a4d4b4;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.88rem;color:#2d5a3e;line-height:1.7}
+
+  .btn-submit{background:var(--green);color:#fff;border:none;border-radius:100px;padding:1rem 2.5rem;font-size:1rem;font-weight:600;cursor:pointer;transition:transform .15s,background .2s;width:100%}
+  .btn-submit:hover{background:var(--green-light);transform:translateY(-1px)}
+  .btn-submit:active{transform:translateY(0)}
+
+  .was-validated .form-control:valid,.form-control.is-valid{border-color:#22c55e;background-image:none}
+  .was-validated .form-control:invalid,.form-control.is-invalid{border-color:#ef4444}
+  .valid-feedback{color:#166534;font-size:.8rem}
+  .invalid-feedback{font-size:.8rem}
+
+
+  #successOverlay{display:none;position:fixed;inset:0;background:rgba(26,107,60,.96);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;color:#fff}
+  #successOverlay.show{display:flex}
+  #successOverlay h2{font-family:var(--font-display);font-size:2.5rem;font-weight:700;margin:1.5rem 0 .75rem}
+  #successOverlay p{font-size:1.1rem;opacity:.85;max-width:440px;line-height:1.7}
+  .check-circle{width:80px;height:80px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+  .btn-back{margin-top:2rem;background:#fff;color:var(--green);border:none;border-radius:100px;padding:.85rem 2.2rem;font-weight:700;cursor:pointer;font-size:1rem}
+
+  @media(max-width:600px){.severity-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <span><svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 3a2 2 0 110 4 2 2 0 010-4zm0 9a6 6 0 01-4.47-2C6.44 10.89 8.1 10 10 10s3.56.89 4.47 2A6 6 0 0110 14z"/></svg></span>
+      HealthLink Rwanda
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="report.html" class="active">Submit Report</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="login.html">logout</a></li>
+      <li><a href="report.html" class="btn-nav">Report Now</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb-custom"><a href="index.html">Home</a> / Submit a Health Report</div>
+    <h1>Submit a Health Incident Report</h1>
+    <p>Fill in the form below to report a health concern in your sector or district. All fields marked with <span style="color:#e53935">*</span> are required. Your report will be reviewed within 4 hours by a district health officer.</p>
+  </div>
+</div>
+
+<div class="form-wrapper">
+  <form id="reportForm" novalidate>
+
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="step-badge">1</span> Location Information
+      </div>
+      <p class="form-section-desc">Help us identify where this incident occurred so the right team can respond.</p>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Province <span class="required">*</span></label>
+          <select class="form-select" id="province" required>
+            <option value="">Select province</option>
+            <option>Kigali City</option>
+            <option>Northern Province</option>
+            <option>Southern Province</option>
+            <option>Eastern Province</option>
+            <option>Western Province</option>
+          </select>
+          <div class="invalid-feedback">Please select a province.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">District <span class="required">*</span></label>
+          <select class="form-select" id="district" required>
+            <option value="">Select district</option>
+            <option>Nyarugenge</option><option>Gasabo</option><option>Kicukiro</option>
+            <option>Bugesera</option><option>Gatsibo</option><option>Kayonza</option>
+            <option>Kirehe</option><option>Ngoma</option><option>Nyagatare</option>
+            <option>Rwamagana</option><option>Burera</option><option>Gakenke</option>
+            <option>Gicumbi</option><option>Musanze</option><option>Rulindo</option>
+            <option>Gisagara</option><option>Huye</option><option>Kamonyi</option>
+            <option>Muhanga</option><option>Nyamagabe</option><option>Nyanza</option>
+            <option>Nyaruguru</option><option>Ruhango</option><option>Karongi</option>
+            <option>Ngororero</option><option>Nyabihu</option><option>Nyamasheke</option>
+            <option>Rubavu</option><option>Rutsiro</option><option>Rusizi</option>
+          </select>
+          <div class="invalid-feedback">Please select a district.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Sector <span class="required">*</span></label>
+          <input type="text" class="form-control" id="sector" placeholder="e.g. Remera" required minlength="2"/>
+          <div class="invalid-feedback">Please enter the sector name.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Cell / Village</label>
+          <input type="text" class="form-control" id="cell" placeholder="e.g. Kibaza Cell"/>
+          <div class="form-text">Optional but helps narrow the response area.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="step-badge">2</span> Incident Details
+      </div>
+      <p class="form-section-desc">Describe what you observed. Be as specific as possible — accurate details speed up the response.</p>
+
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Incident Category <span class="required">*</span></label>
+          <select class="form-select" id="category" required>
+            <option value="">Select a category</option>
+            <optgroup label="Communicable Diseases">
+              <option>Malaria</option><option>Cholera</option><option>Tuberculosis (TB)</option>
+              <option>COVID-19 / Respiratory illness</option><option>Measles</option>
+              <option>Ebola / Viral haemorrhagic fever</option>
+            </optgroup>
+            <optgroup label="Environmental">
+              <option>Contaminated water source</option><option>Sewage / Sanitation problem</option>
+              <option>Air quality concern</option>
+            </optgroup>
+            <optgroup label="Nutrition & MCH">
+              <option>Malnutrition / Stunting</option><option>Maternal health concern</option>
+              <option>Child health concern</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option>Injury / Accident</option><option>Mental health crisis</option>
+              <option>Animal bite / Rabies risk</option><option>Other</option>
+            </optgroup>
+          </select>
+          <div class="invalid-feedback">Please select an incident category.</div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Date of Incident <span class="required">*</span></label>
+          <input type="date" class="form-control" id="incidentDate" required/>
+          <div class="invalid-feedback">Please provide the incident date.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Number of People Affected <span class="required">*</span></label>
+          <input type="number" class="form-control" id="affectedCount" placeholder="e.g. 5" min="1" max="10000" required/>
+          <div class="invalid-feedback">Please enter a valid number (1–10,000).</div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Description <span class="required">*</span></label>
+          <textarea class="form-control" id="description" rows="5" placeholder="Describe the symptoms, conditions, timeline, and any other relevant details…" required minlength="30" maxlength="1500"></textarea>
+          <div class="d-flex justify-content-between">
+            <div class="invalid-feedback">Description must be at least 30 characters.</div>
+            <small class="form-text ms-auto" id="charCount">0 / 1500</small>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label d-block mb-2">Severity Level <span class="required">*</span></label>
+          <div class="severity-grid" id="severityGroup">
+            <div class="severity-btn">
+              <input type="radio" name="severity" id="sev1" value="low" required/>
+              <label class="severity-label" for="sev1"><span class="sev-icon">🟢</span>Low<br><small style="color:#888;font-size:.75rem">Monitoring needed</small></label>
+            </div>
+            <div class="severity-btn">
+              <input type="radio" name="severity" id="sev2" value="medium"/>
+              <label class="severity-label" for="sev2"><span class="sev-icon">🟡</span>Medium<br><small style="color:#888;font-size:.75rem">Prompt attention</small></label>
+            </div>
+            <div class="severity-btn">
+              <input type="radio" name="severity" id="sev3" value="high"/>
+              <label class="severity-label" for="sev3"><span class="sev-icon">🟠</span>High<br><small style="color:#888;font-size:.75rem">Urgent response</small></label>
+            </div>
+            <div class="severity-btn">
+              <input type="radio" name="severity" id="sev4" value="critical"/>
+              <label class="severity-label" for="sev4"><span class="sev-icon">🔴</span>Critical<br><small style="color:#888;font-size:.75rem">Emergency — act now</small></label>
+            </div>
+          </div>
+          <div id="severityError" class="text-danger mt-1" style="font-size:.82rem;display:none">Please select a severity level.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="step-badge">3</span> Supporting Evidence
+      </div>
+      <p class="form-section-desc">Photos, videos, or documents that support your report (optional but recommended).</p>
+      <div class="photo-drop" id="photoDrop" onclick="document.getElementById('photoInput').click()">
+        <svg viewBox="0 0 24 24"><path d="M4 5h13v9H4zm8 2l3 4-2 1-1-2-3 4H5zm11-2v11H7v2h13V5zM9 9a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        <p style="color:#4a6552;font-weight:500;margin-bottom:.25rem">Click to upload photos or drag and drop</p>
+        <p style="font-size:.82rem;color:#888">PNG, JPG, PDF — max 10 MB per file</p>
+      </div>
+      <input type="file" id="photoInput" multiple accept="image/*,.pdf" style="display:none" onchange="handleFiles(this.files)"/>
+      <div id="fileList" style="margin-top:1rem"></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">
+        <span class="step-badge">4</span> Reporter Information
+      </div>
+      <p class="form-section-desc">Your contact details are kept confidential and are only shared with the assigned health officer.</p>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" class="form-control" id="reporterName" placeholder="Your full name" required minlength="3"/>
+          <div class="invalid-feedback">Please enter your full name.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone Number <span class="required">*</span></label>
+          <input type="tel" class="form-control" id="phone" placeholder="+250 7XX XXX XXX" required pattern="^(\+250|0)[0-9]{9}$"/>
+          <div class="invalid-feedback">Please enter a valid Rwandan phone number (e.g. +250 788 000 000).</div>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" placeholder="your@email.com"/>
+          <div class="invalid-feedback">Please enter a valid email address.</div>
+          <div class="form-text">We'll send you updates on your report.</div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Your Role <span class="required">*</span></label>
+          <select class="form-select" id="role" required>
+            <option value="">Select your role</option>
+            <option>Community Member</option>
+            <option>Community Health Worker (CHW / Animateur)</option>
+            <option>Health Centre Staff</option>
+            <option>School Staff</option>
+            <option>Local Government Official</option>
+            <option>NGO / Partner Organisation</option>
+            <option>Other</option>
+          </select>
+          <div class="invalid-feedback">Please select your role.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="consent-box">
+      ℹ️ <strong>Data Notice:</strong> The information you submit will be used solely for public health response purposes. Your identity will not be disclosed publicly. By submitting this form you agree to the HealthLink Rwanda <a href="#" style="color:var(--green)">Privacy Policy</a>.
+    </div>
+
+    <div class="mb-4">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="consentCheck" required/>
+        <label class="form-check-label" for="consentCheck" style="font-size:.9rem">
+          I confirm that the information above is accurate to the best of my knowledge and I consent to it being used for health response purposes. <span class="required">*</span>
+        </label>
+        <div class="invalid-feedback">You must confirm consent to submit.</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit">Submit Health Report →</button>
+  </form>
+</div>
+
+
+<div id="successOverlay">
+  <div class="check-circle">✓</div>
+  <h2>Report Submitted!</h2>
+  <p>Thank you. Your report has been received and assigned to the district health officer. You will receive a confirmation SMS within 30 minutes.</p>
+  <p style="margin-top:1rem;font-size:.88rem;opacity:.7">Reference ID: <strong id="refId">HLR-2025-XXXX</strong></p>
+  <button class="btn-back" onclick="goBack()">Submit Another Report</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+const desc = document.getElementById('description');
+const charCount = document.getElementById('charCount');
+desc.addEventListener('input', () => {
+  charCount.textContent = desc.value.length + ' / 1500';
+});
+
+
+function handleFiles(files) {
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
+  Array.from(files).forEach(f => {
+    const item = document.createElement('div');
+    item.style.cssText = 'display:flex;align-items:center;gap:.5rem;padding:.5rem .75rem;background:#fff;border:1px solid #d4e8da;border-radius:8px;margin-bottom:.5rem;font-size:.85rem';
+    item.innerHTML = `<span style="color:var(--green)">📎</span><span>${f.name}</span><span style="color:#888;margin-left:auto">${(f.size/1024).toFixed(0)} KB</span>`;
+    list.appendChild(item);
+  });
+}
+
+
+document.getElementById('incidentDate').max = new Date().toISOString().split('T')[0];
+
+document.getElementById('reportForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const form = this;
+  
+
+  const severity = form.querySelector('input[name="severity"]:checked');
+  const sevError = document.getElementById('severityError');
+  if (!severity) {
+    sevError.style.display = 'block';
+  } else {
+    sevError.style.display = 'none';
+  }
+
+  form.classList.add('was-validated');
+
+  if (!form.checkValidity() || !severity) return;
+
+  const refId = 'HLR-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 9000 + 1000);
+  document.getElementById('refId').textContent = refId;
+
+  const overlay = document.getElementById('successOverlay');
+  overlay.classList.add('show');
+  window.scrollTo(0, 0);
+});
+
+function goBack() {
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('reportForm').reset();
+  document.getElementById('reportForm').classList.remove('was-validated');
+  document.getElementById('fileList').innerHTML = '';
+  charCount.textContent = '0 / 1500';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
